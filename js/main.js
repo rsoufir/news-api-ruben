@@ -20,35 +20,33 @@ fetch(req)
     })
 
 
-let source = "abc-news";
-let url2 = 'https://newsapi.org/v2/everything?' +
-    'sources=' + source +
-    '&apiKey=f501da9101f04a6ba992045c07b7b288';
-
 const main = document.querySelector("main");
-const div = document.createElement("div");
+//const div = document.createElement("div");
 
-function displayArticleFromSource(){
+const displayArticleFromSource = (name = 'abc-news') => {
+    let url2 = 'https://newsapi.org/v2/everything?' +
+    'sources=' + name +
+    '&apiKey=f501da9101f04a6ba992045c07b7b288';
     let req2 = new Request(url2);
     fetch(req2)
         .then(function(response) {
             response.json().then(data => {
                 const articles = data.articles;
                 articles.forEach(article => {
-                    const div = document.createElement("div");
+                    let articleContainer = document.createElement("article");
                     let img = article.urlToImage;
                     if(!img){
                         img=``;
                     }else{
-                        img = `<img src='${article.urlToImage}' />`;
+                        img = `<figure><img src='${article.urlToImage}' /></figure>`;
                     }
-                    div.innerHTML = `
+                    articleContainer.innerHTML = `
                         <h2>${article.title}</h2>
                         ${img}
                         <p>${article.description}</p>
-                        <a target='_blank' href='${article.url}'>Lire la suite...</a>
+                        <a class='cta' target='_blank' href='${article.url}'>Lire la suite...</a>
                     `;
-                    main.appendChild(div);
+                    main.appendChild(articleContainer);
                 });
             })
         })
@@ -60,12 +58,9 @@ function displayArticleFromSource(){
 displayArticleFromSource();
 
 select.addEventListener("change", function(event){
-    source = event.target.selectedOptions[0].id;
+    let source = event.target.selectedOptions[0].id;
     main.innerHTML = "";
-    url2 = 'https://newsapi.org/v2/everything?' +
-    'sources=' + source +
-    '&apiKey=f501da9101f04a6ba992045c07b7b288';
-    displayArticleFromSource();
+    displayArticleFromSource(source);
 })    
     
 
